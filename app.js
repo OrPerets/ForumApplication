@@ -4,12 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoskin = require('mongoskin');
-
-mongoskin.db('mongodb://localhost:27017/forum');
-
+var mongoose = require('mongoose');
 require('./models/Posts');
 require('./models/Comments');
+mongoose.connect('mongodb://localhost/forum');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -20,8 +18,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

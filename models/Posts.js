@@ -1,11 +1,16 @@
-var mongoskin = require('mongoskin');
-var ObjectID = require('mongoskin').ObjectID;
-var db = mongoskin.db('mongodb://localhost:27017/forum', {safe:false});
-db.bind('system', {});
+var mongoose = require('mongoose');
 
-var Post = {
+var PostSchema = new mongoose.Schema({
     title: String,
     link: String,
     upvotes: {type: Number, default:0},
-    comments: [{type: ObjectID, ref: 'Comment'}]
+    // create "Join" for MongoDB
+    comments: [{type: mongoose.Schema.Types.ObjectId , ref: 'Comment'}]
+});
+
+PostSchema.methods.upvote = function(event) {
+    this.upvotes +=1 ;
+    this.save(event);
 };
+
+mongoose.model('Post', PostSchema);
