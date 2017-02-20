@@ -1,6 +1,6 @@
 var mongoskin = require('mongoskin');
 var ObjectID = require('mongoskin').ObjectID;
-var db = mongoskin.db('mongodb://localhost/forum', {safe:false});
+var db = mongoskin.db('mongodb://localhost:27017/forum', {safe:false});
 db.bind('system', {});
 
 var Post = {
@@ -9,4 +9,3 @@ var Post = {
     upvotes: {type: Number, default:0},
     comments: [{type: ObjectID, ref: 'Comment'}]
 };
-

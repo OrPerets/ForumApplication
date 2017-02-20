@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoskin = require('mongoskin');
 
-mongoskin.db('mongodb://localhost/forum');
+mongoskin.db('mongodb://localhost:27017/forum');
 
 require('./models/Posts');
 require('./models/Comments');
@@ -49,4 +49,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.listen(3000, () => {
+  console.log('App is running at local host port 3000');
+  console.log('Press CTRL-C to stop\n');
+});
 module.exports = app;
