@@ -40,14 +40,14 @@ app.factory('posts', ['$http', function($http){
     return $http.get('/posts').success(function(data) {
       //create a deep copy
       angular.copy(data, all.posts);      
-    })
+    });
   }
 
   all.create = function(post) {
     return $http.post('/posts', post).success(function(data){
       all.posts.push(data);
     });
-  }
+  };
 
   all.upvote = function(post) {
     return $http.put('/posts/'+ post._id + '/upvote').success(function(data){
@@ -56,23 +56,43 @@ app.factory('posts', ['$http', function($http){
   };
 
   all.get = function(id) {
-    return $http.get('/posts/' + id).then(function(data){
+    return $http.get('/posts/' + id).then(function(res){
       return res.data;
     });
   };
 
   all.addComment = function(id, comment) {
-    return $http.get('/posts' + id + 'comments', comment);
+    return $http.post('/posts/' + id + '/comments', comment);
   };
 
   all.upvoteComment = function(post, comment) {
-    return $http.get('/posts' + post._id + '/comments/' + comment._id + '/upvote')
+    return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote')
     .success(function(data){
       comment.upvotes += 1;
     });
   };
 
   return all;
+}]);
+
+app.controller('MainCtrl', [
+'$scope',
+'posts',
+function($scope, posts){
+$scope.posts = posts.posts;
+$scope.addPost = function(){
+  if(!$scope.title || $scope.title === '') { return; }
+  posts.create({
+    title: $scope.title,
+    link: $scope.link,
+  });
+  $scope.title = '';
+  $scope.link = '';
+};
+$scope.incrementUpvotes = function(post) {
+  //post passing by reference
+  posts.upvote(post);
+};
 }]);
 
 app.controller('PostsCtrl', [
@@ -93,24 +113,4 @@ app.controller('PostsCtrl', [
     $scope.incrementUpvotes = function(comment) {
       posts.upvoteComment(post, comment);
     };
-}]);
-
-app.controller('MainCtrl', [
-'$scope',
-'posts',
-function($scope, posts){
-$scope.posts = posts.posts;
-$scope.addPost = function(){
-  if(!$scope.title || $scope.title === '') { return; }
-  posts.create({
-    title: $scope.title,
-    link: $scope.link
-  });
-  $scope.title = '';
-  $scope.link = '';
-};
-$scope.incrementUpvotes = function(post) {
-  //post passing by reference
-  posts.upvote(post);
-};
 }]);
